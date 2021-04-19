@@ -113,7 +113,7 @@ def cdf_plot(model, timeline=None, ax=None, **plot_kwargs):
     return ax
 
 
-def rmst_plot(model, model2=None, t=np.inf, ax=None, text_position=None, **plot_kwargs):
+def rmst_plot(model, model2=None, t=np.inf, ax=None, text_position=None,color1=None,color2=None, **plot_kwargs):
     """
     This functions plots the survival function of the model plus it's area-under-the-curve (AUC) up
     until the point ``t``. The AUC is known as the restricted mean survival time (RMST).
@@ -168,14 +168,20 @@ def rmst_plot(model, model2=None, t=np.inf, ax=None, text_position=None, **plot_
         ax = plt.gca()
 
     rmst = restricted_mean_survival_time(model, t=t)
-    c = ax._get_lines.get_next_color()
+    if color1==None:
+        c = ax._get_lines.get_next_color()
+    else:
+        c=color1
     model.plot_survival_function(ax=ax, color=c, ci_show=False, **plot_kwargs)
 
     if text_position is None:
         text_position = (np.percentile(model.timeline, 10), 0.15)
 
     if model2 is not None:
-        c2 = ax._get_lines.get_next_color()
+        if color2==None:
+            c2 = ax._get_lines.get_next_color()
+        else:
+            c2=color2
         rmst2 = restricted_mean_survival_time(model2, t=t)
         model2.plot_survival_function(ax=ax, color=c2, ci_show=False, **plot_kwargs)
         timeline = np.unique(model.timeline.tolist() + model2.timeline.tolist() + [t])
@@ -217,7 +223,6 @@ def rmst_plot(model, model2=None, t=np.inf, ax=None, text_position=None, **plot_
     ax.axvline(t, ls="--", color="k")
     ax.set_ylim(0, 1)
     return ax
-
 
 def qq_plot(model, ax=None, **plot_kwargs):
     """
